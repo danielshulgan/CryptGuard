@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        .btn {
+            display: block;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to CryptGuard Security</h1>
+    <p>Create an account to securely manage your passwords or log in to access your vault.</p>
+    
+    <div class="container">
+        <a href="{% url 'accounts:signup' %}" class="btn">Register</a>
+        <a href="{% url 'accounts:login' %}" class="btn">Login</a>
+    </div>
+</body>
+</html>

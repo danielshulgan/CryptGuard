@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block document_title %}
+User Dashboard | FNTN
+{% endblock %}
+
+{% block inline_css %}
+<style>
+    .login_password_reset_link {
+        width: max-content;
+        color: var(--primary-400);
+        margin-left: auto;
+        font-weight: var(--font-weight-regular);
+        margin-bottom: var(--margin-block-default);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="main-content"
+      container="main">
+
+    <h1 class="heading capitalize">Welcome, {{ user.first_name }}</h1>
+    <p class="subheading">
+        Here you can view and manage your account details.
+    </p>
+
+    <div class="form"
+         flex="col">
+
+        <label flex="col">
+            Name
+            <input type="text"
+                   name="email"
+                   value="{{ user.first_name }} {{ user.last_name }}"
+                   readonly>
+            <a href="{% url 'accounts:change_name' %}"
+               class="login_password_reset_link">
+                Update Name
+            </a>
+        </label>
+
+        <label flex="col">
+            Email
+            <input type="text"
+                   name="email"
+                   value="{{ user.email }}"
+                   readonly>
+            <a href="{% url 'accounts:change_email' %}"
+               class="login_password_reset_link">
+                Update Email
+            </a>
+        </label>
+
+        <label flex="col">
+            Password
+            <input type="password"
+                   name="password"
+                   value="AbsolutelyTheHellNot"
+                   readonly>
+            <a href="{% url 'otp_auth:send_otp' %}"
+               class="login_password_reset_link">
+                Update Password
+            </a>
+        </label>
+    </div>
+
+</main>
+{% endblock %}

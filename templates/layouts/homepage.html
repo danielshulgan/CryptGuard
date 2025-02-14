@@ -1,0 +1,195 @@
+{% load static %}
+
+{% block document_title %}
+My Vault | CryptGuard
+{% endblock %}
+
+{% block inline_css %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f9fc;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    #main-content {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: #4CAF50;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .vault {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .password-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+    }
+
+    .password-item:hover {
+        background: #f1f1f1;
+    }
+
+    .password-info {
+        flex: 1;
+    }
+
+    .password-info h3 {
+        font-size: 1rem;
+        margin: 0;
+        color: #333;
+    }
+
+    .password-info p {
+        font-size: 0.875rem;
+        margin: 5px 0 0;
+        color: #666;
+    }
+
+    .password-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .password-actions button {
+        padding: 8px 12px;
+        font-size: 0.875rem;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .password-actions button:hover {
+        background-color: #45a049;
+    }
+
+    .copy-btn {
+        background-color: #2196F3;
+    }
+
+    .copy-btn:hover {
+        background-color: #1e87e5;
+    }
+
+    .edit-btn {
+        background-color: #FF9800;
+    }
+
+    .edit-btn:hover {
+        background-color: #e68900;
+    }
+
+    .logout {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .logout a {
+        color: #4CAF50;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .logout a:hover {
+        text-decoration: underline;
+    }
+
+    .add-password-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        transition: background-color 0.3s;
+    }
+
+    .add-password-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="main-content">
+
+    <h1>Welcome, {{ user.username }}</h1>
+    <p class="subheading">This is your secure password vault. Manage your credentials safely.</p>
+
+    <div class="vault">
+        {% for password in passwords %}
+        <div class="password-item">
+            <div class="password-info">
+                <h3>{{ password.name }}</h3>
+                <p>{{ password.username }} - {{ password.hidden_password }}</p>
+            </div>
+            <div class="password-actions">
+                <button class="copy-btn" onclick="copyPassword('{{ password.id }}')">Copy</button>
+                <button class="edit-btn" onclick="editPassword('{{ password.id }}')">Edit</button>
+            </div>
+        </div>
+        {% empty %}
+        <p>You have no passwords saved yet.</p>
+        {% endfor %}
+    </div>
+
+    <div class="logout">
+        <a href="{% url 'accounts:logout' %}">Logout</a>
+    </div>
+
+
+</main>
+{% endblock %}
+
+{% block inline_js %}
+<script>
+    // Function to copy password to clipboard
+    function copyPassword(passwordId) {
+        const passwordField = document.querySelector(`#password-${passwordId}`);
+        navigator.clipboard.writeText(passwordField.innerText).then(() => {
+            alert("Password copied to clipboard!");
+        }).catch(err => {
+            console.error("Failed to copy password:", err);
+        });
+    }
+
+    // Function to edit password (redirects to an edit page)
+    function editPassword(passwordId) {
+        window.location.href = `/edit-password/${passwordId}/`;
+    }
+</script>
+{% endblock %}

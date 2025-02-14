@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Password Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'accounts:signup' %}">Register</a></li>
+                    <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Flash Messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        <!-- Content will be injected here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Password Manager. All rights reserved.</p>
+    </footer>
+
+    <!-- Page-Specific Scripts -->
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

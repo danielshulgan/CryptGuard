@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block document_title %}
+Send One Time Password | FNTN
+{% endblock %}
+
+{% block inline_css %}
+<style>
+  .account_redirect {
+    width: max-content;
+    margin-inline: auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .account_redirect>a {
+    color: var(--primary-400);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="main-content"
+      container="main">
+
+  <h1 class="heading">Send One-Time Password</h1>
+  <p class="subheading">Receive a one-time code to access your account and reset your password.</p>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form action="{% url 'otp_auth:send_otp' %}"
+        method="POST"
+        class="form"
+        flex="col">
+
+    {% csrf_token %}
+
+    <label flex="col">
+      Email
+      <input type="email"
+             id="email"
+             name="email"
+             placeholder="Enter your email."
+             required>
+    </label>
+
+    <!-- Submit button -->
+    <button type="submit"
+            class="">Send OTP</button>
+  </form>
+
+  <div class="account_redirect"
+       flex="">
+    <a href="{% url 'accounts:login' %}">Back to Login
+    </a>
+  </div>
+</main>
+{% endblock %}

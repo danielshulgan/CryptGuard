@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block document_title %}
+Verify One Time Password | FNTN
+{% endblock %}
+
+{% block inline_css %}
+<style>
+  .account_redirect {
+    width: max-content;
+    margin-inline: auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .account_redirect>a {
+    color: var(--primary-400);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<main id="main-content"
+      container="main">
+
+  <h1 class="heading">Enter Code</h1>
+  <p class="subheading">A one-time code was sent to your entered email address. Verify the code by entering it in the
+    form below.</p>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="POST"
+        action="{% url 'otp_auth:verify_otp' %}"
+        class="form"
+        flex="col">
+
+    {% csrf_token %}
+
+    <label flex="col">
+      Enter Code
+      <input type="text"
+             id="otp"
+             name="otp"
+             placeholder="Your code here"
+             required>
+    </label>
+
+    <button type="submit"
+            class="">Verify OTP</button>
+
+
+  </form>
+
+  <div class="account_redirect">
+    <a href="{% url 'otp_auth:send_otp' %}">Request a new code.</a>
+  </div>
+</main>
+{% endblock %}
