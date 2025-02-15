@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Login</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% if stage == 1 %}
+            <!-- Stage 1: Display Login Fields -->
+            {{ login_form.as_p }}
+            <button type="submit">Submit</button>
+        {% elif stage == 2 %}
+            <!-- Stage 2: Display OTP Field -->
+            <p>Email: {{ login_form.data.email }}</p>
+            {{ otp_form.as_p }}
+            <button type="submit">Verify OTP</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

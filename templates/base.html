@@ -7,25 +7,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My App{% endblock %}</title>
     <!-- Link to your CSS files -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Header: Contains site logo, navigation, etc. -->
     <header>
-        <div class="logo">
-            <a href="{% url 'homepage' %}">My App</a>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="{% url 'homepage' %}">Home</a></li>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container">
+            <a class="navbar-brand" href="{% url 'homepage' %}">My App</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'homepage' %}">Home</a>
+                </li>
                 {% if user.is_authenticated %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                  </li>
                 {% else %}
-                    <li><a href="{% url 'accounts:signup' %}">Register</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:signup' %}">Register</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                  </li>
                 {% endif %}
-            </ul>
+              </ul>
+            </div>
+          </div>
         </nav>
-    </header>
+      </header>
 
     <!-- Main content block -->
     <main>
@@ -35,11 +52,21 @@
     </main>
 
     <!-- Footer: Contains copyright and other common links -->
-    <footer>
+    <footer class="text-center mt-4">
         <p>&copy; {% now "Y" %} My App. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript files -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" 
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" 
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" 
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" 
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" 
+            integrity="sha384-B4gt1jrGC7Jh4AgSLQ4zUh2QbE0B5a2x4e1jz4sxSbT8G38Zz+omG7r5f5E5w9Fm" 
+            crossorigin="anonymous"></script>
+    <!-- Your custom JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

@@ -37,7 +37,36 @@ class CustomUserCreationForm(UserCreationForm):
             'contact', 
             'password1', 
             'password2']  
+        
+class LoginForm(forms.Form):
+    email = forms.EmailField(
+        label="Email",
+        widget=forms.EmailInput(attrs={'placeholder': 'Email', 'class': 'form-control'}),
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control'}),
+    )
 
+class OTPForm(forms.Form):
+    otp = forms.CharField(
+        label="One-Time Password",
+        max_length=6,
+        widget=forms.TextInput(attrs={'placeholder': 'Enter OTP', 'class': 'form-control'}),
+    )
+
+class ChangeNameForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+class PasswordResetRequestForm(forms.Form):
+    email = forms.EmailField(label="Enter your registered email", widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+class OTPPasswordResetForm(forms.Form):
+    otp = forms.CharField(label="Enter OTP", max_length=6, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'OTP'}))
+    new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Password'}))
+    new_password2 = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm New Password'}))
 
 
 
