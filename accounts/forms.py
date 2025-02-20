@@ -68,6 +68,24 @@ class OTPPasswordResetForm(forms.Form):
     new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Password'}))
     new_password2 = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm New Password'}))
 
+class ChangeEmailForm(forms.Form):
+    new_email = forms.EmailField(
+        label="New Email",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter new email'})
+    )
+    confirm_new_email = forms.EmailField(
+        label="Confirm New Email",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new email'})
+    )
+    current_password = forms.CharField(
+        label="Current Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter current password'})
+    )
 
-
-    
+    def clean(self):
+        cleaned_data = super().clean()
+        new_email = cleaned_data.get('new_email')
+        confirm_new_email = cleaned_data.get('confirm_new_email')
+        if new_email and confirm_new_email and new_email != confirm_new_email:
+            raise forms.ValidationError("The two email addresses do not match.")
+        return cleaned_data

@@ -4,20 +4,34 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Login</h1>
-    <form method="post">
-        {% csrf_token %}
-        {% if stage == 1 %}
-            <!-- Stage 1: Display Login Fields -->
-            {{ login_form.as_p }}
-            <button type="submit">Submit</button>
-        {% elif stage == 2 %}
-            <!-- Stage 2: Display OTP Field -->
-            <p>Email: {{ login_form.data.email }}</p>
-            {{ otp_form.as_p }}
-            <button type="submit">Verify OTP</button>
-        {% endif %}
-    </form>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white text-center">
+          <h2>Login</h2>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            {% if stage == 1 %}
+              <!-- Stage 1: Display Login Fields -->
+              {{ login_form.as_p }}
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            {% elif stage == 2 %}
+              <!-- Stage 2: Display OTP Field -->
+              <p class="mb-3">Email: {{ login_form.data.email }}</p>
+              {{ otp_form.as_p }}
+              <div class="text-center">
+                <button type="submit" class="btn btn-success">Verify OTP</button>
+              </div>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

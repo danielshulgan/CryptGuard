@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Your Vault{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Your Vault</h1>
+  <a href="{% url 'vault:vault_item_add' %}" class="btn btn-primary mb-3">Add New Item</a>
+  {% if items %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>Service</th>
+            <th>Login Email</th>
+            <th>Password</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.service }}</td>
+            <td>{{ item.login_email }}</td>
+            <td>
+              <!-- Use an input of type password to hide the value initially -->
+              <input type="password" id="password-{{ item.pk }}" value="{{ item.get_password }}" readonly class="form-control-plaintext">
+            </td>
+            <td>
+              <a href="{% url 'vault:vault_item_edit' item.pk %}" class="btn btn-sm btn-warning">Edit</a>
+              <a href="{% url 'vault:vault_item_delete' item.pk %}" class="btn btn-sm btn-danger">Delete</a>
+              <button class="btn btn-sm btn-info" onclick="revealPassword('{{ item.pk }}')">Reveal</button>
+              <button class="btn btn-sm btn-secondary" onclick="copyPassword('{{ item.pk }}')">Copy</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info" role="alert">
+      No items found. Click "Add New Item" to get started.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function revealPassword(itemId) {
+    var input = document.getElementById("password-" + itemId);
+    if (input) {
+      // Change input type to text to reveal the password
+      input.type = "text";
+      // After 2 seconds, revert the type back to "password" to hide it
+      setTimeout(function() {
+        input.type = "password";
+      }, 2000);
+    }
+  }
+
+  function copyPassword(itemId) {
+    var input = document.getElementById("password-" + itemId);
+    if (input) {
+      navigator.clipboard.writeText(input.value)
+        .then(function() {
+          alert("Password copied to clipboard!");
+        })
+        .catch(function(err) {
+          console.error("Error copying password:", err);
+          alert("Error copying password.");
+        });
+    }
+  }
+</script>
+{% endblock %}

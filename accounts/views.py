@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import User
-from .forms import  CustomUserCreationForm, LoginForm, OTPForm, ChangeNameForm, PasswordResetRequestForm, OTPPasswordResetForm
+from .forms import  CustomUserCreationForm, LoginForm, OTPForm, ChangeNameForm, PasswordResetRequestForm, OTPPasswordResetForm, ChangeEmailForm
 
 User = get_user_model()
 
@@ -218,3 +218,23 @@ class PasswordResetView(View):
             else:
                 messages.error(request, "Please correct the errors below.")
                 return render(request, self.template_name, {"form": form, "stage": 1})
+            
+            
+class ChangeEmailView(LoginRequiredMixin, FormView):
+    template_name = 'accounts/change_email.html'
+    form_class = ChangeEmailForm
+    success_url = reverse_lazy('accounts:dashboard')
+
+    def form_valid(self, form):
+        new_email = form.cleaned_data.get('new_email')
+        current_password = form.cleaned_data.get('current_password')
+        user = self.request.user
+        # Check if the current password is correct
+        if not user.check_password(current_password):
+            form.add_error('current_password', "The current password is incorrect.")
+            return self.form_invalid(form)
+        # If password is correct, update the user's email
+        user.email = new_email
+        user.save()
+        messages.success(self.request, "Your email address has been updated successfully.")
+        return super().form_valid(form)

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Change Your Name{% endblock %}
+{% block title %}Change Email{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -9,7 +9,7 @@
     <div class="col-md-6">
       <div class="card shadow-sm">
         <div class="card-header bg-info text-white text-center">
-          <h2>Change Your Name</h2>
+          <h2>Change Your Email</h2>
         </div>
         <div class="card-body">
           <form method="post">
@@ -17,6 +17,7 @@
             {{ form.as_p }}
             <div class="text-center">
               <button type="submit" class="btn btn-primary">Save Changes</button>
+              <a href="{% url 'accounts:dashboard' %}" class="btn btn-secondary ml-2">Cancel</a>
             </div>
           </form>
         </div>

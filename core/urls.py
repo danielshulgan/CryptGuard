@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomePageView.as_view(), name='homepage'),  
     path('accounts/', include('accounts.urls')),
+    path('vault/', include('vault.urls')),
 ]

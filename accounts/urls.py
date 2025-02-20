@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import  SignupView, CombinedLoginView, logout_view, dashboard_view, ChangeNameView, PasswordResetView
+from .views import  SignupView, CombinedLoginView, logout_view, dashboard_view, ChangeNameView, PasswordResetView, ChangeEmailView
 
 app_name = 'accounts'
 
@@ -10,6 +10,7 @@ urlpatterns = [
     path('dashboard/', dashboard_view, name='dashboard'),
     path('change-name/', ChangeNameView.as_view(), name='change_name'),
     path('password-reset/', PasswordResetView.as_view(), name='password_reset'),
+    path('change-email/', ChangeEmailView.as_view(), name='change_email'),
 
 
 ]

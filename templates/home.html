@@ -1,17 +1,57 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Welcome{% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Hero section covers the full viewport height */
+  .hero {
+      position: relative;
+      background: url('{% static "images/hero-bg.jpg" %}') no-repeat center center;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  /* A semi-transparent dark overlay to improve text readability */
+  .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+  }
+  /* Content that sits on top of the overlay */
+  .hero-content {
+      position: relative;
+      z-index: 2;
+      color: #fff;
+  }
+  .hero-content h1 {
+      font-size: 3rem;
+      font-weight: bold;
+  }
+  .hero-content p {
+      font-size: 1.25rem;
+      margin-bottom: 30px;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <h1 class="mb-4">Welcome to My App</h1>
-            <p class="mb-4">Please choose an option:</p>
-            <a href="{% url 'accounts:signup' %}" class="btn btn-secondary mr-2">Register</a>
-            <a href="{% url 'accounts:dashboard' %}" class="btn btn-secondary">Dashboard</a>
-        </div>
-    </div>
+<div class="hero">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content text-center">
+      <h1 class="display-3">CryptGuard</h1>
+      <p class="lead">Your secure vault for managing passwords and more.</p>
+      <div class="d-flex justify-content-center">
+          <a href="{% url 'accounts:signup' %}" class="btn btn-secondary btn-lg mx-2">Register Account</a>
+          <a href="{% url 'vault:vault_list' %}" class="btn btn-primary btn-lg mx-2">Access Vault</a>
+          <a href="{% url 'accounts:dashboard' %}" class="btn btn-secondary btn-lg mx-2">User Dashboard</a>
+      </div>
+  </div>
 </div>
 {% endblock %}
