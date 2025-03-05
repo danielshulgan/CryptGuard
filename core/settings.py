@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'vault',
     'accounts',
     'core',
+    'generator',
+    'widget_tweaks',
 
 ]
 

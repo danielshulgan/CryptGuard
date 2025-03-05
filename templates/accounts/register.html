@@ -12,6 +12,12 @@
           <h2>Register</h2>
         </div>
         <div class="card-body">
+          <!-- Log In Section at the Top -->
+          <div class="text-center mb-3">
+            <p>Already have an account?</p>
+            <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Log In</a>
+          </div>
+          <!-- Registration Form -->
           <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

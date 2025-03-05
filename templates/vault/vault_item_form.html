@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block title %}
   {% if object %}Edit Vault Item{% else %}Add New Vault Item{% endif %}
@@ -18,7 +19,37 @@
         <div class="card-body">
           <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {% for field in form %}
+              {% if field.name == "password" %}
+                <div class="form-group">
+                  <label for="password-field">{{ field.label }}</label>
+                  <div class="input-group">
+                    {{ field|attr:"id:password-field" }}
+                    <div class="input-group-append">
+                      <button type="button" id="generate-password" class="btn btn-secondary">Generate</button>
+                    </div>
+                  </div>
+                  <small class="form-text text-muted">
+                    Desired password length:
+                    <input type="number" id="password-length" value="12" min="4" style="width:70px;">
+                  </small>
+                  {% if field.errors %}
+                    <div class="text-danger">{{ field.errors }}</div>
+                  {% endif %}
+                </div>
+              {% else %}
+                <div class="form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                  {% endif %}
+                  {% if field.errors %}
+                    <div class="text-danger">{{ field.errors }}</div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
             <div class="text-center">
               <button type="submit" class="btn btn-primary">
                 {% if object %}Save Changes{% else %}Add Item{% endif %}
@@ -31,4 +62,16 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.getElementById("generate-password").addEventListener("click", function() {
+    var length = document.getElementById("password-length").value;
+    fetch("/generator/generate/?length=" + length)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("password-field").value = data.password;
+      })
+      .catch(error => console.error('Error generating password:', error));
+  });
+</script>
 {% endblock %}

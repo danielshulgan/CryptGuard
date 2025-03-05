@@ -23,4 +23,6 @@ urlpatterns = [
     path('', HomePageView.as_view(), name='homepage'),  
     path('accounts/', include('accounts.urls')),
     path('vault/', include('vault.urls')),
+    path('generator/', include('generator.urls')),
+
 ]

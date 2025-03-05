@@ -12,6 +12,7 @@ class VaultItemForm(forms.ModelForm):
     class Meta:
         model = VaultItem
         fields = ['service', 'login_email', 'password']
+        
     
     def save(self, commit=True):
         instance = super().save(commit=False)
