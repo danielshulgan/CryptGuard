@@ -1,14 +1,21 @@
 import pyotp
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth.models import User
+from django.views.generic import TemplateView
 from django.views import View
 from django.contrib import messages
 from django.utils import timezone
 from django.views.generic.edit import FormView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import User
+from sendgrid_utils import send_verification_email
 from .forms import  CustomUserCreationForm, LoginForm, OTPForm, ChangeNameForm, PasswordResetRequestForm, OTPPasswordResetForm, ChangeEmailForm
 
 User = get_user_model()
@@ -16,22 +23,53 @@ User = get_user_model()
 class SignupView(FormView):
     template_name = 'accounts/register.html'
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('homepage')  # Redirect to dashboard after signup
+    success_url = reverse_lazy('accounts:email_verification_sent')  # New page
 
     def form_valid(self, form):
-        # Save the user but don't commit to the database yet
         user = form.save(commit=False)
         user.set_password(form.cleaned_data['password1'])  # Hash the password
-        user.is_signed_agreement = timezone.now()  # Set agreement time
-        user.save()  # Save user to the database
+        user.is_active = False  # Deactivate until email is verified
+        user.is_signed_agreement = timezone.now()
+        user.save()
 
-        # Log the user in after signup
-        login(self.request, user)
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        verification_url = self.request.build_absolute_uri(
+            reverse('accounts:verify_email', kwargs={'uidb64': uid, 'token': token})
+        )
+
+        send_verification_email(user.email, verification_url)
+        messages.info(self.request, "A verification email has been sent to your email address. Please check your inbox.")
+
+        # Do NOT log the user in automatically.
         return super().form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, "Please correct the error below.")
         return super().form_invalid(form)
+
+class EmailVerificationSentView(TemplateView):
+    template_name = "accounts/email_verification_sent.html"
+    
+#For registration MFA
+class VerifyEmailView(View):
+    template_name = "accounts/verify_email.html"  # Create this template
+
+    def get(self, request, uidb64, token, *args, **kwargs):
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            user.is_active = True  # Activate the user
+            user.save()
+            messages.success(request, "Your email has been verified! You can now log in.")
+            return redirect('accounts:login')
+        else:
+            messages.error(request, "The verification link is invalid or has expired.")
+            return render(request, self.template_name)
     
 def logout_view(request):
     logout(request)  # This will log the user out.
