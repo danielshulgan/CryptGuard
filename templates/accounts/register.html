@@ -16,6 +16,9 @@
           <div class="text-center mb-3">
             <p>Already have an account?</p>
             <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Log In</a>
+            <p class="mt-2">
+              <a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
+            </p>
           </div>
           <!-- Registration Form -->
           <form method="post">
