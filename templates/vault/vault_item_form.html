@@ -21,26 +21,26 @@
             {% csrf_token %}
             {% for field in form %}
               {% if field.name == "password" %}
-                <div class="form-group">
+                <div class="form-group mb-3">
                   <label for="password-field">{{ field.label }}</label>
                   <div class="input-group">
-                    {{ field|attr:"id:password-field" }}
+                    {{ field|add_class:"form-control" |attr:"id:password-field" }}
                     <div class="input-group-append">
                       <button type="button" id="generate-password" class="btn btn-secondary">Generate</button>
                     </div>
                   </div>
                   <small class="form-text text-muted">
                     Desired password length:
-                    <input type="number" id="password-length" value="12" min="4" style="width:70px;">
+                    <input type="number" id="password-length" value="12" min="4" class="form-control d-inline-block ms-2" style="width:70px;">
                   </small>
                   {% if field.errors %}
                     <div class="text-danger">{{ field.errors }}</div>
                   {% endif %}
                 </div>
               {% else %}
-                <div class="form-group">
+                <div class="form-group mb-3">
                   <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                  {{ field }}
+                  {{ field|add_class:"form-control" }}
                   {% if field.help_text %}
                     <small class="form-text text-muted">{{ field.help_text }}</small>
                   {% endif %}
@@ -54,7 +54,7 @@
               <button type="submit" class="btn btn-primary">
                 {% if object %}Save Changes{% else %}Add Item{% endif %}
               </button>
-              <a href="{% url 'vault:vault_list' %}" class="btn btn-secondary ml-2">Cancel</a>
+              <a href="{% url 'vault:vault_list' %}" class="btn btn-secondary ms-2">Cancel</a>
             </div>
           </form>
         </div>
