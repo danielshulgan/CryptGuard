@@ -33,6 +33,12 @@
                     Desired password length:
                     <input type="number" id="password-length" value="12" min="4" class="form-control d-inline-block ms-2" style="width:70px;">
                   </small>
+                  <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="include-special" checked>
+                    <label class="form-check-label" for="include-special">
+                      Include special characters
+                    </label>
+                  </div>
                   {% if field.errors %}
                     <div class="text-danger">{{ field.errors }}</div>
                   {% endif %}
@@ -66,7 +72,8 @@
 <script>
   document.getElementById("generate-password").addEventListener("click", function() {
     var length = document.getElementById("password-length").value;
-    fetch("/generator/generate/?length=" + length)
+    var includeSpecial = document.getElementById("include-special").checked;
+    fetch("/generator/generate/?length=" + length + "&include_special=" + includeSpecial)
       .then(response => response.json())
       .then(data => {
         document.getElementById("password-field").value = data.password;
