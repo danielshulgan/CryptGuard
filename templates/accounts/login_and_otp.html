@@ -12,6 +12,25 @@
           <h2>Login</h2>
         </div>
         <div class="card-body">
+          
+          <!-- Display Error Messages (Red Alert) -->
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.tags == "error" %}
+                <div class="alert alert-danger">{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          <!-- Display Informational Messages (Blue Alert) -->
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.tags == "info" %}
+                <div class="alert alert-info">{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
           <form method="post">
             {% csrf_token %}
             {% if stage == 1 %}

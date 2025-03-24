@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Verification Successful{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white">
+      <h2>Verification Successful</h2>
+    </div>
+    <div class="card-body">
+      <p class="lead">Your email has been verified and you are now logged in.</p>
+      <p>You will be redirected to the homepage shortly.</p>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript auto-redirect -->
+<script>
+  // Redirect immediately; you can add a small delay if desired.
+  window.location.href = "{{ redirect_url }}";
+</script>
+{% endblock %}

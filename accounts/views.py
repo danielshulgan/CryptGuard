@@ -15,6 +15,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import User
+from django.contrib.messages import get_messages
 from sendgrid_utils import send_verification_email
 from .forms import  CustomUserCreationForm, LoginForm, OTPForm, ChangeNameForm, PasswordResetRequestForm, OTPPasswordResetForm, ChangeEmailForm
 
@@ -52,8 +53,15 @@ class EmailVerificationSentView(TemplateView):
     template_name = "accounts/email_verification_sent.html"
     
 #For registration MFA
+from django.contrib.auth import login
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+
 class VerifyEmailView(View):
-    template_name = "accounts/verify_email.html"  # Create this template
+    template_name = "accounts/verify_redirect.html"  # New template
 
     def get(self, request, uidb64, token, *args, **kwargs):
         try:
@@ -65,11 +73,15 @@ class VerifyEmailView(View):
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True  # Activate the user
             user.save()
-            messages.success(request, "Your email has been verified! You can now log in.")
-            return redirect('accounts:login')
+            messages.success(request, "Your email has been verified! You are now logged in.")
+            login(request, user)
+            list(get_messages(request))
+            # Instead of a direct redirect, render a page that auto-redirects.
+            return render(request, self.template_name, {"redirect_url": reverse_lazy('homepage')})
         else:
             messages.error(request, "The verification link is invalid or has expired.")
-            return render(request, self.template_name)
+            return render(request, "accounts/verify_email.html")
+
     
 def logout_view(request):
     logout(request)  # This will log the user out.
@@ -80,13 +92,16 @@ class CombinedLoginView(View):
     template_name = 'accounts/login_and_otp.html'
     
     def get(self, request):
-        # Initially, display only the login form.
+        if '_messages' in request.session:
+            request.session['_messages'] = []  # Clear out any messages
+            request.session.modified = True     # Mark session as modified so the change is saved
+
         login_form = LoginForm()
-        otp_form = OTPForm()  # This can be hidden initially in the template.
+        otp_form = OTPForm()
         return render(request, self.template_name, {
             'login_form': login_form,
             'otp_form': otp_form,
-            'stage': 1,  # Stage 1: login credentials only.
+            'stage': 1,
         })
     
     def post(self, request):
@@ -218,7 +233,7 @@ class PasswordResetView(View):
                     request.session.pop("reset_otp_secret", None)
                     request.session.pop("reset_user_id", None)
                     messages.success(request, "Your password has been updated successfully!")
-                    return redirect(reverse_lazy("accounts:login"))
+                    return redirect(reverse_lazy('accounts:login'))
                 else:
                     messages.error(request, "Invalid OTP. Please try again.")
                     return render(request, self.template_name, {"form": form, "stage": 2})
@@ -250,7 +265,6 @@ class PasswordResetView(View):
                 from sendgrid_utils import send_otp_via_sendgrid
                 send_otp_via_sendgrid(user.email, otp_code)
                 
-                messages.info(request, "An OTP has been sent to your email. Please enter it along with your new password.")
                 form = OTPPasswordResetForm()
                 return render(request, self.template_name, {"form": form, "stage": 2})
             else:

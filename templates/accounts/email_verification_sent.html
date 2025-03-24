@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Verify Your Email{% endblock %}
+
 {% block content %}
-<div class="container mt-5 text-center">
-  <h2>Please Verify Your Email</h2>
-  <p>A verification email has been sent to your email address. Please click the link in the email to activate your account.</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white text-center">
+          <h2>Verify Your Email</h2>
+        </div>
+        <div class="card-body text-center">
+          <p class="lead">A verification email has been sent to your email address.</p>
+          <p>Please click the link in the email to activate your account.</p>
+          <p>If you've already verified your email, you can <a href="{% url 'accounts:login' %}">log in here</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
